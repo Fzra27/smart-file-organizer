@@ -99,7 +99,7 @@ function render() {
         row.append(dot, el('span','',t(name)), el('b','',bytes(values.size)));
         $('legend').append(row);
     });
-    $('donut').style.background = data.size ? 'conic-gradient(' + stops.join(',') + ')' : '#edf0f2';
+    $('donut').style.background = data.size ? 'conic-gradient(' + stops.join(',') + ')' : '#2d3a43';
     const fraction = data.disk.total ? data.disk.used / data.disk.total * 100 : 0;
     $('diskPercent').textContent = t('{percent}% · {size} kullanılıyor', {percent:fraction.toLocaleString(locale(), {maximumFractionDigits:1}),size:bytes(data.disk.used)});
     $('diskBar').style.width = fraction + '%';

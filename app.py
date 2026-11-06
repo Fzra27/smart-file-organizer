@@ -387,8 +387,13 @@ def main():
     parser = argparse.ArgumentParser(description='Akıllı Dosya Düzenleyici')
     parser.add_argument('--folder', help='Düzenlenecek klasör')
     parser.add_argument('--port', type=int, default=8765)
-    parser.add_argument('--no-browser', action='store_true')
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--no-browser', action='store_true', help='Headless local server')
+    mode.add_argument('--browser', action='store_true', help='Explicit browser mode')
     args = parser.parse_args()
+    if not args.no_browser and not args.browser:
+        from desktop import run
+        raise SystemExit(run(args.folder, args.port))
     engine = Organizer(args.folder)
     server = ThreadingHTTPServer(('127.0.0.1', args.port), make_handler(engine, secrets.token_urlsafe(32)))
     threading.Thread(target=engine.watch, daemon=True).start()

@@ -3,8 +3,10 @@ import os
 from pathlib import Path
 import tempfile
 import subprocess
+import sys
+import types
 import selectors
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 import threading
 import time
 import unittest
@@ -148,6 +150,28 @@ class OrganizerTests(unittest.TestCase):
             selector.close()
             process.terminate()
             process.communicate(timeout=10)
+
+    def test_default_launch_uses_desktop_without_browser(self):
+        import app
+        run = Mock(return_value=0)
+        fake = types.ModuleType('desktop')
+        fake.run = run
+        with patch.dict(sys.modules, {'desktop': fake}), patch.object(sys, 'argv', ['app.py']), patch('app.webbrowser.open') as browser:
+            with self.assertRaises(SystemExit) as result:
+                app.main()
+            self.assertEqual(result.exception.code, 0)
+            run.assert_called_once_with(None, 8765)
+            browser.assert_not_called()
+
+    def test_desktop_menu_entry(self):
+        import install_desktop
+        with patch.dict(os.environ, {'XDG_DATA_HOME': str(self.root / 'menu data')}):
+            install_desktop.install()
+            entry = self.root / 'menu data/applications/derli.desktop'
+            text = entry.read_text('utf-8')
+            self.assertIn('Terminal=false', text)
+            self.assertIn('Exec=/usr/bin/python3 "', text)
+            self.assertNotIn('--browser', text)
 
     def test_http_session_protection(self):
         server = ThreadingHTTPServer(('127.0.0.1', 0), make_handler(self.app, 'test-token'))

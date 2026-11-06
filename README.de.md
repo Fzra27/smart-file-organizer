@@ -1,18 +1,19 @@
 # Derli — Intelligente Dateiverwaltung
 
-Lokale Dateiverwaltung mit türkischer und deutscher Oberfläche. Keine zusätzlichen Python-Pakete und keine Internetverbindung erforderlich.
+Lokale Dateiverwaltung mit türkischer und deutscher Oberfläche. Die Oberfläche startet standardmäßig als eigenes GTK/WebKit-Fenster mit dunklem Design. Für die einmalige Einrichtung werden Ubuntu-Systempakete benötigt; anschließend läuft die Anwendung lokal.
 
 ## Ubuntu / Linux starten
 
 Benötigt Python **3.10 oder neuer**. Entpacke das Archiv, öffne ein Terminal im Programmordner und starte:
 
 ```sh
+sh Kur-Ubuntu.sh  # einmalig: GTK/WebKit installieren und Menüeintrag anlegen
 sh Baslat.sh
 ```
 
 Falls Python fehlt: `sudo apt install python3`. Starte das Programm anschließend **ohne sudo**.
 
-Der Browser öffnet sich unter `http://127.0.0.1:8765`. Falls er sich nicht automatisch öffnet, rufe diese Adresse manuell auf. Beenden: **Strg+C** im Terminal. Das Schließen des Browserfensters beendet den Server nicht.
+Die Anwendung öffnet ein eigenes Fenster. Du kannst sie auch über **Derli** im Anwendungsmenü starten. Beim Schließen des Fensters wird der lokale Server beendet. Eine alte laufende Browser-Version zuerst mit **Strg+C** im Terminal beenden. `--no-browser` startet ausdrücklich nur den lokalen Server; `--browser` öffnet ausdrücklich einen Webbrowser.
 
 ```sh
 sh Baslat.sh --folder "/home/name/Downloads"
@@ -37,7 +38,7 @@ Versteckte Dateien, symbolische Verknüpfungen und temporäre Downloads werden �
 
 ## Prüfung
 
-11 automatische Tests unter Ubuntu 24.04 / Python 3.12 in einem Container mit einem Benutzer ohne Administratorrechte; Linux-Startskript und lokaler HTTP-Server eingeschlossen. Sprachwechsel, gespeicherte Sprachauswahl, deutsche Vorschauen, Verlauf, Fehlermeldungen, Dateioperationen und mobiles Layout wurden zusätzlich mit Chromium unter Debian geprüft. Das automatische Öffnen eines Ubuntu-Desktop-Browsers wurde nicht direkt getestet.
+Das native GTK/WebKit-Fenster wurde unter Ubuntu 24.04 mit einem Benutzer ohne Administratorrechte und virtuellem Bildschirm geöffnet: dunkler Hintergrund, Hilfetexte und Deutsch-Auswahl erfolgreich. Zusätzlich bestanden 13 automatische Prüfungen unter Debian sowie die TR/DE-Dateiabläufe in Chromium. Hardwarebeschleunigung und der Menüeintrag auf einem echten Ubuntu-Desktop wurden nicht direkt getestet.
 
 ```sh
 python3 -m unittest -v

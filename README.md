@@ -1,37 +1,48 @@
 # Derli — Akıllı Dosya Düzenleyici
 
-Türkçe ve Almanca arayüzlü, bilgisayarında çalışan dosya düzenleme uygulaması. Python standart kütüphanesiyle yazılmıştır; ek paket, hesap veya internet bağlantısı gerektirmez. Arayüz yerel tarayıcıda açılır.
+Türkçe ve Almanca arayüzlü, bilgisayarında çalışan dosya düzenleme uygulaması. Dosya işlemleri Python standart kütüphanesiyle çalışır; masaüstü penceresi GTK/WebKit sistem paketlerini kullanır. Hesap gerekmez. İlk kurulumdan sonra internet bağlantısı gerektirmez.
 
-## Başlatma
+## Ubuntu masaüstü sürümü (v1.2)
 
-Python **3.10 veya üzeri** gerekir. ZIP veya Linux için hazırlanan `.tar.gz` paketini bir klasöre çıkar.
+Uygulama varsayılan olarak **kendi GTK/WebKit penceresinde**, **koyu temayla** açılır. Normal başlangıçta tarayıcı açılmaz. Türkçe ve Almanca seçenekleri korunur.
 
-### Ubuntu / Linux
+Bir defalık kurulum, uygulama klasöründe:
 
-Uygulama klasöründe terminal aç ve çalıştır:
+```sh
+sh Kur-Ubuntu.sh
+```
+
+Bu komut Ubuntu paket yöneticisinden `python3`, `python3-gi`, `gir1.2-gtk-3.0` ve `gir1.2-webkit2-4.1` yükler; kullanıcı hesabının Uygulamalar menüsüne **Derli** kısayolu ekler. Paket kurulumu için sudo parolan istenir. Kurulum internet gerektirir; normal kullanım yereldir. Uygulama klasörünü taşırsan menü kısayolunu güncellemek için `python3 install_desktop.py` çalıştır.
+
+Ardından Uygulamalar menüsünden **Derli** aç veya terminalde:
 
 ```sh
 sh Baslat.sh
 ```
 
-Python kurulu değilse önce `sudo apt install python3` kullan. Uygulamayı **sudo olmadan**, kendi kullanıcı hesabınla çalıştır. Başlatıcı tarayıcıyı otomatik açar. Grafik arayüz bulunmayan sistemlerde `sh Baslat.sh --no-browser` kullanabilirsin; arayüze aynı bilgisayardan `http://127.0.0.1:8765` adresiyle erişilir.
+Pencereyi kapatınca yerel sunucu ve otomatik düzenleme sona erer. Önceki tarayıcı sürümü terminalde hâlâ çalışıyorsa **Ctrl+C** ile durdur. Port doluysa `sh Baslat.sh --port 0` kullanılabilir; bu durumda uygulama boş bir port seçer. Dil tercihi kullanılan yerel adrese göre saklanır.
 
-Ubuntu'nun `~/.config/user-dirs.dirs` dosyasındaki `XDG_DOWNLOAD_DIR` ayarı okunur. Böylece İndirilenler, Downloads veya başka bir ada sahip indirme klasörünün yolu otomatik önerilir. `XDG_CONFIG_HOME` desteklenir. Ayar yoksa `~/Downloads` önerilir; tam yolu elle değiştirebilirsin.
+Python 3.10+ gerekir. Linux başlatıcısı Ubuntu'nun GI paketleriyle uyumlu olan `/usr/bin/python3` kullanır. Windows/macOS için GTK kurulumu bu sürümde sağlanmaz; açıkça istenirse `python app.py --browser` ile web arayüzü kullanılabilir.
 
-### Diğer sistemler
-
-- **Windows:** `Baslat.bat` dosyasına çift tıkla. Python yüklü değilse önce python.org üzerinden yükle.
-- **macOS / Linux:** Terminalde uygulama klasörüne geç ve `python3 app.py` çalıştır. macOS'ta `Baslat.command` da kullanılabilir; gerekirse önce `chmod +x Baslat.command` çalıştır.
-- Tarayıcı açılmazsa `http://127.0.0.1:8765` adresine git.
-- Kapatmak için terminalde **Ctrl+C** kullan. Tarayıcı sekmesini kapatmak sunucuyu durdurmaz.
+### İsteğe bağlı sunucu / tarayıcı modu
 
 ```sh
 python3 app.py --folder "/tam/yol/Downloads"
-python3 app.py --port 8766
 python3 app.py --no-browser
+python3 app.py --browser
 ```
 
-Windows terminalinde `python3` yerine `py -3` veya `python` kullanılabilir. Program Ubuntu 24.04 konteynerinde Python 3.12 ile, yönetici olmayan kullanıcı altında 11 otomatik testten geçirilmiştir. Başlatıcının yerel sunucuyu açması ve dil dosyalarını sunması test edilmiştir. Türkçe/Almanca arayüz ve mobil görünüm ayrıca Debian üzerinde Chromium ile kontrol edilmiştir. Ubuntu masaüstünde tarayıcının otomatik açılması ve Windows/macOS üzerinde doğrudan test yapılmamıştır.
+`--no-browser` yalnızca yerel sunucuyu başlatır, `--browser` açıkça web tarayıcısı ister. Sunucu modunda adres `http://127.0.0.1:8765`, durdurma **Ctrl+C**. Varsayılan başlangıç masaüstü penceresidir. Masaüstü bileşenleri eksikse kurulum komutu gösterilir; kendiliğinden tarayıcıya geçilmez.
+
+Ubuntu'nun `~/.config/user-dirs.dirs` dosyasındaki `XDG_DOWNLOAD_DIR` ayarı okunur. `XDG_CONFIG_HOME` desteklenir. Ayar yoksa `~/Downloads` önerilir; tam yolu elle değiştirebilirsin.
+
+## Ne işe yarar?
+
+1. **Düzenler:** Ana klasördeki `fatura.pdf` dosyasını `Belgeler/`, `foto.jpg` dosyasını `Görseller/` klasörüne taşır. Alt klasörlerini yeniden düzenlemez. Önizlemeden sonra onay verirsin.
+2. **Kopyaları bulur:** Dosya isimleri farklı olsa da tüm içeriklerin SHA-256 özetlerini karşılaştırır. Her grupta en eski kopya korunur, diğerleri onayınla karantinaya taşınır. Geri alma geçmişten yapılır.
+3. **Alanı analiz eder:** En büyük dosyaları, dosya türlerinin toplam boyutunu ve diskteki gerçek boş alanı gösterir.
+
+**Karantina alan boşaltmaz.** Uygulama kalıcı silme yapmaz. Alan kazanmak için karantinadaki kopyaları kontrol edip kendin silmelisin. Otomatik mod başlangıçta kapalıdır; açarsan yalnızca uygulama çalışırken her 15 saniyede ana klasörü düzenler. Bilgisayar açılışında kendi kendine çalışmaz.
 
 ## Dil seçimi
 
@@ -68,7 +79,7 @@ Sunucu yalnızca `127.0.0.1` üzerinde dinler. Değişiklik istekleri her açıl
 
 ## Geliştirme / GitHub
 
-Proje ek bağımlılık gerektirmez. `app.py` dosya işlemlerini ve HTTP sunucusunu, `static/` arayüzü içerir. GitHub'a kaynak olarak aktarılmaya hazırdır; uygulama GitHub hesabına erişmez.
+Proje ek bağımlılık gerektirmez. `app.py` dosya işlemlerini ve yerel sunucuyu, `desktop.py` GTK/WebKit penceresini, `static/` arayüzü içerir. GitHub'a kaynak olarak aktarılmaya hazırdır; uygulama GitHub hesabına erişmez.
 
 ```sh
 python3 -m unittest -v
@@ -77,3 +88,7 @@ node --check static/i18n.js
 ```
 
 Testler: önizleme, dosya adı çakışmaları, geri alma, SHA-256 ile kopya tespiti, karantina, değişen dosyalar, korunan kopyanın doğrulanması, sembolik bağlantılar, otomatik mod, yerel API oturumu, XDG indirme klasörü ve Linux başlatıcısı. Testler geçici klasörlerde çalışır.
+
+## v1.2 doğrulaması
+
+GTK/WebKit penceresi Ubuntu 24.04 konteynerinde yönetici olmayan kullanıcı ve sanal ekranla açılarak test edildi: koyu arka plan, açıklama bölümü ve Almanca geçişi doğrulandı. Masaüstünde varsayılan tarayıcı kullanılmadığı kontrol edildi. 13 otomatik kontrol Debian ortamında geçti; dosya işlemleri ve arayüzün TR/DE akışları da doğrulandı. Donanım hızlandırması ve Ubuntu masaüstü menüsü gerçek kullanıcı cihazında ayrıca denenmelidir.
